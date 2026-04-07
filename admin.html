@@ -56,7 +56,15 @@
   .btn:active { transform: scale(0.98); }
   .btn-primary { background: var(--text); color: var(--bg); }
   .btn-danger { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); }
+  .pin-digit {
+    width: 52px; height: 56px; font-size: 22px; font-weight: 500; text-align: center;
+    font-family: 'DM Sans', sans-serif; background: var(--bg); border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); color: var(--text); outline: none; margin: 0;
+    transition: border-color 0.15s;
+  }
+  .pin-digit:focus { border-color: var(--gold); }
   .btn-sm { width: auto; padding: 6px 12px; font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif; border-radius: var(--radius-sm); border: none; cursor: pointer; }
+  .modal-overlay.hidden { display: none; }
   .error-msg { font-size: 13px; color: var(--red); margin-top: 8px; text-align: center; min-height: 20px; }
 
   /* Admin layout */
@@ -129,6 +137,7 @@
   .btn-save { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green); }
   .btn-reset-pts { background: var(--gold-bg); color: var(--gold-text); border: 1px solid rgba(186,117,23,0.4); }
   .btn-delete { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); }
+  .btn-reset-pin { background: #EDE8DF; color: #2C2416; border: 1px solid rgba(44,36,22,0.22); }
 
   /* Toast */
   .toast {
@@ -213,7 +222,7 @@
 
   <div class="credit">
     Made by <strong>Tiffany Wen</strong><br>
-    <span style="font-size:11px;">because Flow was doing manual insanity and someone had to fix it.</span>
+    <span style="font-size:11px;">because Flow was doing manual insanity and someone had to fix it</span>
   </div>
 </div>
 
@@ -221,7 +230,7 @@
 
 <script>
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbYa58sN5PExUvwm-U-cTbNnQUKhQSySzNnJuGGVes1G0ZanwP6OhlhQkbPXqEvdGI/exec';
-var ADMIN_PW = 'Tiffany@Flow2026';
+var ADMIN_PW = 'flowadmin2025';
 var AUTH_KEY = 'flow_admin_auth';
 
 var B1 = [
@@ -495,6 +504,86 @@ if (sessionStorage.getItem(AUTH_KEY) === '1') {
   document.getElementById('admin-panel').classList.add('visible');
   loadData();
 }
+
+var resetPinTargetId = null;
+
+function hashPin(pin) {
+  var h = 0;
+  for (var i = 0; i < pin.length; i++) { h = (Math.imul(31, h) + pin.charCodeAt(i)) | 0; }
+  return h.toString(36);
+}
+
+function setupPinInput(prefix) {
+  for (var i = 0; i < 4; i++) {
+    (function(idx) {
+      var input = document.getElementById(prefix + idx);
+      if (!input) return;
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').slice(-1);
+        if (this.value && idx < 3) document.getElementById(prefix + (idx+1)).focus();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && idx > 0) document.getElementById(prefix + (idx-1)).focus();
+      });
+    })(i);
+  }
+}
+
+function promptResetPin(id) {
+  resetPinTargetId = id;
+  var name = profiles[id] ? profiles[id].name : 'this profile';
+  document.getElementById('pin-reset-sub').textContent = 'Set a new 4-digit PIN for ' + name + '.';
+  document.getElementById('pin-reset-error').textContent = '';
+  for (var i = 0; i < 4; i++) { document.getElementById('rpin' + i).value = ''; }
+  document.getElementById('pin-reset-modal').classList.remove('hidden');
+  setTimeout(function() { document.getElementById('rpin0').focus(); }, 100);
+}
+
+function closeResetPin() {
+  document.getElementById('pin-reset-modal').classList.add('hidden');
+  resetPinTargetId = null;
+}
+
+function submitResetPin() {
+  var pin = '';
+  for (var i = 0; i < 4; i++) { pin += document.getElementById('rpin' + i).value; }
+  if (pin.length < 4) {
+    document.getElementById('pin-reset-error').textContent = 'Please enter all 4 digits.';
+    return;
+  }
+  var id = resetPinTargetId;
+  var p = profiles[id];
+  if (!p) return;
+  p.pinHash = hashPin(pin);
+  apiPost({action: 'saveProfile', id: id, data: p}).then(function(r) {
+    if (r.error) { showToast('Failed to reset PIN'); return; }
+    showToast('PIN reset for ' + p.name);
+    closeResetPin();
+  }).catch(function() { showToast('Failed to reset PIN'); });
+}
+
+setupPinInput('rpin');
 </script>
+
+<!-- Reset PIN modal -->
+<div class="modal-overlay hidden" id="pin-reset-modal" style="position:fixed;inset:0;background:rgba(44,36,22,0.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;">
+  <div style="background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:28px;width:100%;max-width:340px;">
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:6px;">Reset PIN</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:20px;" id="pin-reset-sub">Set a new 4-digit PIN for this profile.</div>
+    <div style="font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">New PIN</div>
+    <div style="display:flex;gap:10px;margin-bottom:16px;justify-content:center;">
+      <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="rpin0" />
+      <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="rpin1" />
+      <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="rpin2" />
+      <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="rpin3" />
+    </div>
+    <div style="color:var(--red);font-size:13px;text-align:center;margin-bottom:12px;min-height:20px;" id="pin-reset-error"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" style="background:var(--surface2);color:var(--text2);" onclick="closeResetPin()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitResetPin()">Set new PIN</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
