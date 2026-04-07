@@ -802,22 +802,20 @@ async function resetCurrent() {
 // ── INIT ─────────────────────────────────────────────────
 async function init() {
   scriptUrl = 'https://script.google.com/macros/s/AKfycbwbYa58sN5PExUvwm-U-cTbNnQUKhQSySzNnJuGGVes1G0ZanwP6OhlhQkbPXqEvdGI/exec';
-  if (!scriptUrl) { showScreen('config'); return; }
-  setStatus('status','loading','Connecting...');
+  renderAvatarPicker(AV_COLORS[0]);
   try {
     const r = await apiGet({action:'getAll'});
-    if (r.error || r.profiles === undefined) { showScreen('config'); return; }
-    profiles = r.profiles;
-    if (currentId && profiles[currentId]) {
-      showMain();
-    } else {
-      renderAvatarPicker(AV_COLORS[0]);
-      populateSwitcher();
-      showScreen('onboard');
+    if (r.profiles !== undefined) {
+      profiles = r.profiles;
+      if (currentId && profiles[currentId]) {
+        showMain();
+        return;
+      }
     }
-  } catch(e) {
-    showScreen('config');
-  }
+  } catch(e) {}
+  populateSwitcher();
+  showScreen('onboard');
+  document.getElementById('main-tabs').style.display = 'none';
 }
 
 init();
