@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Flow Challenge Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --surface: #FDFAF5;
+    --surface2: #EDE8DF;
+    --text: #2C2416;
+    --text2: #7A6E5F;
+    --text3: #A89E8E;
+    --border: rgba(44,36,22,0.12);
+    --border2: rgba(44,36,22,0.22);
+    --green: #1D9E75;
+    --green-bg: #E1F5EE;
+    --green-text: #085041;
+    --green-border: #5DCAA5;
+    --gold: #BA7517;
+    --gold-bg: #FAEEDA;
+    --gold-text: #633806;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, .serif { font-family: 'DM Serif Display', serif; }
+
+  /* Layout */
+  .app { max-width: 480px; margin: 0 auto; padding: 0 0 80px; }
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); }
+  .logo span { color: var(--gold); }
+  .tab-bar { display: flex; gap: 0; }
+  .tab-btn {
+    flex: 1; padding: 10px 0; font-size: 13px; font-weight: 500;
+    border: none; background: transparent; cursor: pointer; color: var(--text2);
+    border-bottom: 2px solid transparent; font-family: 'DM Sans', sans-serif;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--gold); }
+
+  /* Screens */
+  .screen { display: none; padding: 20px; }
+  .screen.active { display: block; }
+
+  /* Onboard */
+  .onboard-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 24px;
+  }
+  .onboard-title { font-family: 'DM Serif Display', serif; font-size: 26px; margin-bottom: 6px; }
+  .onboard-sub { font-size: 14px; color: var(--text2); margin-bottom: 24px; line-height: 1.6; }
+  .field-label { font-size: 12px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  input[type=text], select {
+    width: 100%; padding: 10px 12px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+    background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius-sm);
+    color: var(--text); outline: none; margin-bottom: 16px;
+    transition: border-color 0.15s;
+  }
+  input[type=text]:focus, select:focus { border-color: var(--gold); }
+  .av-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 20px; }
+  .av-opt {
+    aspect-ratio: 1; border-radius: 50%; cursor: pointer;
+    border: 3px solid transparent; transition: border-color 0.15s, transform 0.1s;
+  }
+  .av-opt:hover { transform: scale(1.1); }
+  .av-opt.selected { border-color: var(--text); }
+  .btn {
+    width: 100%; padding: 12px; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+    border-radius: var(--radius-sm); border: none; cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--text); color: var(--bg); }
+  .btn-secondary { background: var(--surface2); color: var(--text); margin-top: 8px; }
+  .btn-sm { width: auto; padding: 7px 12px; font-size: 12px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  /* Tracker */
+  .profile-bar {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    background: var(--surface); border-radius: var(--radius-sm);
+    border: 1px solid var(--border); padding: 10px 12px;
+  }
+  .profile-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; flex-shrink: 0;
+  }
+  .profile-bar select { margin: 0; flex: 1; padding: 0; border: none; background: transparent; font-size: 14px; font-weight: 500; }
+  .profile-bar select:focus { outline: none; }
+
+  /* Points banner */
+  .pts-banner { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .pts-card { background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 12px; text-align: center; }
+  .pts-label { font-size: 11px; color: var(--text3); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .pts-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); line-height: 1; }
+  .pts-sub { font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+  /* Lucky draw */
+  .lucky-bar {
+    background: var(--gold-bg); border: 1px solid rgba(186,117,23,0.3);
+    border-radius: var(--radius-sm); padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;
+  }
+  .lucky-label { font-size: 13px; color: var(--gold-text); font-weight: 500; }
+  .lucky-sub { font-size: 11px; color: var(--gold); margin-top: 2px; }
+  .lucky-num { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--gold-text); }
+
+  /* Section */
+  .section-title {
+    font-size: 11px; font-weight: 500; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.07em; margin: 20px 0 8px;
+  }
+
+  /* Classes */
+  .classes-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px; }
+  .class-dot {
+    aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--border2);
+    cursor: pointer; background: transparent; transition: background 0.12s, border-color 0.12s, transform 0.1s;
+  }
+  .class-dot:hover { transform: scale(1.15); border-color: var(--green); }
+  .class-dot.done { background: var(--green); border-color: var(--green); }
+
+  /* Proof row */
+  .proof-row {
+    display: flex; gap: 6px; align-items: center;
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);
+  }
+  .proof-input {
+    flex: 1; padding: 6px 10px; font-size: 12px; font-family: 'DM Sans', sans-serif;
+    background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    color: var(--text); outline: none; margin: 0;
+  }
+  .proof-input:focus { border-color: var(--green-border); }
+  .drive-btn {
+    font-size: 11px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+    padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border2);
+    background: var(--surface); color: var(--text2); cursor: pointer; white-space: nowrap;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .drive-btn:hover { background: var(--surface2); color: var(--text); }
+  .drive-btn.has-proof { background: var(--green-bg); color: var(--green-text); border-color: var(--green-border); }
+
+  /* Bonus cards */
+  .bonus-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
+  .bonus-grid-1 { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; }
+  .bonus-card {
+    background: var(--surface); border-radius: var(--radius-sm);
+    border: 1px solid var(--border); padding: 10px 12px;
+    transition: border-color 0.15s;
+  }
+  .bonus-card.done { border-color: var(--green-border); background: var(--green-bg); }
+  .bonus-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+  .bonus-name { font-size: 12px; font-weight: 500; color: var(--text); line-height: 1.4; flex: 1; }
+  .bonus-card.done .bonus-name { color: var(--green-text); }
+  .bonus-pts { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .bonus-card.done .bonus-pts { color: var(--green); }
+  .bdots { display: flex; gap: 4px; flex-shrink: 0; margin-top: 2px; }
+  .bdot {
+    width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--border2);
+    cursor: pointer; background: transparent; transition: background 0.12s;
+  }
+  .bdot:hover { border-color: var(--green); }
+  .bdot.done { background: var(--green); border-color: var(--green); }
+
+  /* Leaderboard */
+  .lb-row {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+    background: var(--surface); border-radius: var(--radius-sm);
+    border: 1px solid var(--border); margin-bottom: 8px;
+    transition: border-color 0.15s;
+  }
+  .lb-row.me { border-color: var(--green-border); background: var(--green-bg); }
+  .lb-row.first { border-color: rgba(186,117,23,0.4); }
+  .lb-rank { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text2); width: 32px; text-align: center; flex-shrink: 0; }
+  .lb-row.first .lb-rank { color: var(--gold); }
+  .lb-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+  .lb-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .lb-row.me .lb-name { color: var(--green-text); }
+  .lb-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .lb-pts { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); }
+  .lb-entries { font-size: 11px; color: var(--text2); text-align: right; }
+
+  /* Status */
+  .status-bar {
+    display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+    background: var(--surface2); border-radius: var(--radius-sm);
+    font-size: 12px; color: var(--text2); margin-bottom: 16px;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .status-dot.loading { background: var(--gold); animation: pulse 1s infinite; }
+  .status-dot.error { background: #E24B4A; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* Setup notice */
+  .setup-notice {
+    background: var(--gold-bg); border: 1px solid rgba(186,117,23,0.3);
+    border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 16px;
+    font-size: 13px; color: var(--gold-text); line-height: 1.6;
+  }
+  .setup-notice strong { font-weight: 500; }
+
+  .reset-link {
+    font-size: 12px; color: var(--text3); background: none; border: none;
+    cursor: pointer; padding: 0; margin-top: 20px; text-decoration: underline;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Config screen */
+  .config-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; line-height: 1.6; }
+  code { font-family: monospace; font-size: 12px; background: var(--surface2); padding: 2px 6px; border-radius: 4px; }
+
+  /* Saving indicator */
+  .saving-toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--text); color: var(--bg); font-size: 12px; padding: 8px 16px;
+    border-radius: 20px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 100;
+    white-space: nowrap;
+  }
+  .saving-toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">Flow <span>Challenge</span></div>
+      <button class="btn btn-sm" onclick="showConfig()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;border-radius:var(--radius-sm);cursor:pointer;padding:6px 12px;">Setup</button>
+    </div>
+    <div class="tab-bar" id="main-tabs" style="display:none;">
+      <button class="tab-btn active" onclick="showTab('tracker')">My tracker</button>
+      <button class="tab-btn" onclick="showTab('leaderboard')">Leaderboard</button>
+    </div>
+  </div>
+
+  <!-- Config screen -->
+  <div class="screen active" id="screen-config">
+    <div class="onboard-card">
+      <div class="onboard-title">Setup</div>
+      <p class="onboard-sub">Paste your Google Apps Script URL to connect the shared backend.</p>
+
+      <div class="field-label">Apps Script web app URL</div>
+      <input type="text" id="script-url" placeholder="https://script.google.com/macros/s/..." />
+
+      <div class="config-label">
+        Don't have one yet? Follow the setup guide included in the zip file, then paste the URL here.
+      </div>
+      <button class="btn btn-primary" onclick="saveConfig()">Connect & continue</button>
+      <button class="btn btn-secondary" onclick="testConfig()">Test connection</button>
+    </div>
+  </div>
+
+  <!-- Onboard screen -->
+  <div class="screen" id="screen-onboard">
+    <div class="onboard-card">
+      <div class="onboard-title">Join the challenge</div>
+      <p class="onboard-sub">Create your profile. Your progress will sync with your group in real time.</p>
+
+      <div class="field-label">Your name</div>
+      <input type="text" id="ob-name" placeholder="e.g. Aisha" maxlength="24" />
+
+      <div class="field-label">Pick a colour</div>
+      <div class="av-grid" id="av-picker"></div>
+
+      <button class="btn btn-primary" onclick="createProfile()" id="create-btn">Join the challenge</button>
+
+      <hr class="divider" />
+
+      <div class="field-label">Already have a profile?</div>
+      <select id="ob-switch"></select>
+      <button class="btn btn-secondary" onclick="switchProfile()">Switch to this profile</button>
+    </div>
+  </div>
+
+  <!-- Main screen -->
+  <div class="screen" id="screen-main">
+
+    <!-- Tracker tab -->
+    <div id="tab-tracker">
+      <div class="profile-bar">
+        <div class="profile-avatar" id="current-avatar"></div>
+        <select id="profile-switcher" onchange="switchToProfile(this.value)"></select>
+        <button class="btn btn-sm" onclick="goOnboard()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;border-radius:var(--radius-sm);cursor:pointer;padding:6px 10px;white-space:nowrap;">+ New</button>
+      </div>
+
+      <div class="status-bar">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">Connected — syncing with group</span>
+      </div>
+
+      <div class="pts-banner">
+        <div class="pts-card"><div class="pts-label">Classes</div><div class="pts-num" id="classCount">0</div><div class="pts-sub">of 21 pts</div></div>
+        <div class="pts-card"><div class="pts-label">Bonus</div><div class="pts-num" id="bonusCount">0</div><div class="pts-sub">pts earned</div></div>
+        <div class="pts-card"><div class="pts-label">Total</div><div class="pts-num" id="totalCount">0</div><div class="pts-sub">pts</div></div>
+      </div>
+
+      <div class="lucky-bar">
+        <div>
+          <div class="lucky-label">Lucky draw entries</div>
+          <div class="lucky-sub">every 12 pts = 1 entry</div>
+        </div>
+        <div class="lucky-num" id="luckyCount">0</div>
+      </div>
+
+      <div class="section-title">Classes attended — tap to mark</div>
+      <div class="classes-grid" id="classGrid"></div>
+      <div class="proof-row">
+        <input type="text" class="proof-input" id="class-note" placeholder="Proof note (e.g. reformer class, 7 Apr)" />
+        <button class="drive-btn" id="class-drive-btn" onclick="openDrive()">Upload proof</button>
+      </div>
+
+      <div class="section-title">+1 pt bonuses</div>
+      <div class="bonus-grid" id="grid1"></div>
+      <div class="section-title">+2 pt bonuses</div>
+      <div class="bonus-grid" id="grid2"></div>
+      <div class="section-title">+3 pt bonuses</div>
+      <div class="bonus-grid" id="grid3"></div>
+      <div class="section-title">+5 pt bonuses</div>
+      <div class="bonus-grid-1" id="grid5"></div>
+      <div class="section-title">Early signup</div>
+      <div class="bonus-grid-1" id="gridE"></div>
+
+      <button class="reset-link" onclick="resetCurrent()">Reset my progress</button>
+    </div>
+
+    <!-- Leaderboard tab -->
+    <div id="tab-leaderboard" style="display:none;">
+      <div class="status-bar">
+        <div class="status-dot" id="lb-status-dot"></div>
+        <span id="lb-status-text">Loading leaderboard...</span>
+      </div>
+      <div id="lb-list"></div>
+      <div style="text-align:center;margin-top:16px;">
+        <button class="drive-btn" onclick="openDrive()" style="font-size:13px;padding:9px 16px;">Open proof folder on Drive</button>
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-top:12px;text-align:center;">Refresh the page to see the latest scores</div>
+    </div>
+  </div>
+</div>
+
+<div class="saving-toast" id="toast">Saved</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────
+const DRIVE_URL = 'https://drive.google.com/drive/folders/1WaEOliYqb-Ih5MMBVH_pcdyhX5o4t4E0';
+const CONFIG_KEY = 'flow_script_url';
+const CURRENT_KEY = 'flow_current_id';
+
+const AV_COLORS = ['#1D9E75','#378ADD','#D4537E','#D85A30','#7F77DD','#BA7517'];
+const MAX_CLASSES = 21;
+
+const B1 = [
+  {id:'ig_instr', name:'IG story with instructor', max:3},
+  {id:'ig_friend', name:'IG story with new friend', max:3},
+  {id:'merch', name:'Class in Flow merch', max:3},
+];
+const B2 = [
+  {id:'wkday_morn', name:'2 weekday morning classes', max:2},
+  {id:'pilates_chair', name:'2 Pilates Chair Sculpt', max:2},
+  {id:'diff_instr', name:'4 different instructors', max:2},
+  {id:'megastrength', name:'2 MegaStrength classes', max:1},
+  {id:'drunk_elephant', name:'Drunk Elephant workshop', max:1},
+];
+const B3 = [
+  {id:'refer', name:'Refer friend to intro pack', max:1},
+  {id:'google_review', name:'Google review for 2 studios', max:1},
+  {id:'five_days', name:'5 days in a row', max:1},
+];
+const B5 = [
+  {id:'team4', name:'Register as team of 4', max:1},
+  {id:'before_after', name:'IG feed before & after', max:1},
+];
+
+// ── STATE ────────────────────────────────────────────────
+let scriptUrl = localStorage.getItem(CONFIG_KEY) || '';
+let currentId = localStorage.getItem(CURRENT_KEY) || '';
+let profiles = {};
+let saveTimer = null;
+
+// ── API ──────────────────────────────────────────────────
+async function apiGet(params) {
+  const url = new URL(scriptUrl);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k,v));
+  const r = await fetch(url.toString());
+  return r.json();
+}
+
+async function apiPost(body) {
+  const r = await fetch(scriptUrl, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  return r.json();
+}
+
+// ── UTILS ────────────────────────────────────────────────
+function initials(name) { return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?'; }
+function calcBonus(p) {
+  let t = 0;
+  B1.forEach(b => t += (p.bonuses?.[b.id]||0)*1);
+  B2.forEach(b => t += (p.bonuses?.[b.id]||0)*2);
+  B3.forEach(b => t += (p.bonuses?.[b.id]||0)*3);
+  B5.forEach(b => t += (p.bonuses?.[b.id]||0)*5);
+  t += (p.earlySignup||0)*3;
+  return t;
+}
+function calcTotal(p) { return (p.classes||0) + calcBonus(p); }
+function openDrive() { window.open(DRIVE_URL, '_blank'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function setStatus(id, state, text) {
+  const dot = document.getElementById(id+'-dot');
+  const txt = document.getElementById(id+'-text');
+  if (!dot || !txt) return;
+  dot.className = 'status-dot' + (state==='loading'?' loading':state==='error'?' error':'');
+  txt.textContent = text;
+}
+
+// ── CONFIG ───────────────────────────────────────────────
+function showConfig() {
+  document.getElementById('script-url').value = scriptUrl;
+  showScreen('config');
+  document.getElementById('main-tabs').style.display = 'none';
+}
+
+function saveConfig() {
+  const url = document.getElementById('script-url').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    alert('Please paste a valid Google Apps Script URL.');
+    return;
+  }
+  scriptUrl = url;
+  localStorage.setItem(CONFIG_KEY, url);
+  init();
+}
+
+async function testConfig() {
+  const url = document.getElementById('script-url').value.trim();
+  if (!url) { alert('Paste a URL first.'); return; }
+  scriptUrl = url;
+  try {
+    const r = await apiGet({action:'getAll'});
+    if (r.profiles !== undefined) alert('Connection successful! Found ' + Object.keys(r.profiles).length + ' profile(s).');
+    else alert('Connected but got unexpected response: ' + JSON.stringify(r));
+  } catch(e) {
+    alert('Connection failed: ' + e.message);
+  }
+}
+
+// ── SCREENS ──────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+
+function showTab(name) {
+  document.getElementById('tab-tracker').style.display = name==='tracker'?'block':'none';
+  document.getElementById('tab-leaderboard').style.display = name==='leaderboard'?'block':'none';
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&name==='tracker')||(i===1&&name==='leaderboard')));
+  if (name==='leaderboard') loadAndRenderLeaderboard();
+}
+
+// ── ONBOARD ──────────────────────────────────────────────
+function renderAvatarPicker(selected) {
+  const el = document.getElementById('av-picker');
+  el.innerHTML = '';
+  AV_COLORS.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'av-opt' + (c===selected?' selected':'');
+    d.style.background = c;
+    d.onclick = () => { document.querySelectorAll('.av-opt').forEach(x=>x.classList.remove('selected')); d.classList.add('selected'); };
+    el.appendChild(d);
+  });
+}
+
+function getSelectedColor() {
+  const s = document.querySelector('.av-opt.selected');
+  return s ? s.style.background : AV_COLORS[0];
+}
+
+function goOnboard() {
+  renderAvatarPicker(AV_COLORS[0]);
+  populateSwitcher();
+  showScreen('onboard');
+  document.getElementById('main-tabs').style.display = 'none';
+}
+
+function populateSwitcher() {
+  const sel = document.getElementById('ob-switch');
+  sel.innerHTML = '<option value="">— select —</option>';
+  Object.entries(profiles).forEach(([id,p]) => {
+    const o = document.createElement('option');
+    o.value = id; o.textContent = p.name; sel.appendChild(o);
+  });
+}
+
+async function createProfile() {
+  const name = document.getElementById('ob-name').value.trim();
+  if (!name) { alert('Please enter your name.'); return; }
+  const color = getSelectedColor();
+  const btn = document.getElementById('create-btn');
+  btn.textContent = 'Creating...'; btn.disabled = true;
+  try {
+    const r = await apiPost({action:'createProfile', name, color});
+    if (r.error) { alert('Error: ' + r.error); return; }
+    profiles[r.id] = {name, color, classes:0, bonuses:{}, notes:{}, earlySignup:0, classNote:''};
+    currentId = r.id;
+    localStorage.setItem(CURRENT_KEY, currentId);
+    showMain();
+  } catch(e) {
+    alert('Could not create profile. Check your connection.');
+  } finally {
+    btn.textContent = 'Join the challenge'; btn.disabled = false;
+  }
+}
+
+async function switchProfile() {
+  const id = document.getElementById('ob-switch').value;
+  if (!id) return;
+  currentId = id;
+  localStorage.setItem(CURRENT_KEY, currentId);
+  showMain();
+}
+
+async function switchToProfile(id) {
+  currentId = id;
+  localStorage.setItem(CURRENT_KEY, currentId);
+  renderCurrentAvatar();
+  renderTracker();
+}
+
+// ── MAIN ─────────────────────────────────────────────────
+function showMain() {
+  showScreen('main');
+  document.getElementById('main-tabs').style.display = 'flex';
+  renderProfileSwitcher();
+  renderCurrentAvatar();
+  renderTracker();
+}
+
+function renderProfileSwitcher() {
+  const sel = document.getElementById('profile-switcher');
+  sel.innerHTML = '';
+  Object.entries(profiles).forEach(([id,p]) => {
+    const o = document.createElement('option');
+    o.value = id; o.textContent = p.name + (id===currentId?' (you)':'');
+    if (id===currentId) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+
+function renderCurrentAvatar() {
+  const p = profiles[currentId]; if (!p) return;
+  const el = document.getElementById('current-avatar');
+  el.style.background = p.color + '30';
+  el.style.color = p.color;
+  el.textContent = initials(p.name);
+}
+
+function cp() { return profiles[currentId]; }
+
+// ── TRACKER ──────────────────────────────────────────────
+function renderTracker() {
+  const p = cp(); if (!p) return;
+  const bonus = calcBonus(p), total = (p.classes||0) + bonus;
+  document.getElementById('classCount').textContent = p.classes||0;
+  document.getElementById('bonusCount').textContent = bonus;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('luckyCount').textContent = Math.floor(total/12);
+
+  const cn = document.getElementById('class-note');
+  cn.value = p.classNote||'';
+  cn.onchange = () => { p.classNote = cn.value; scheduleSave(); };
+  document.getElementById('class-drive-btn').className = 'drive-btn' + (p.classNote?' has-proof':'');
+  document.getElementById('class-drive-btn').textContent = p.classNote ? 'Proof added' : 'Upload proof';
+
+  renderClassGrid();
+  renderBonusGroup('grid1', B1, 1);
+  renderBonusGroup('grid2', B2, 2);
+  renderBonusGroup('grid3', B3, 3);
+  renderBonusGroup('grid5', B5, 5);
+  renderEarlyBonus();
+  setStatus('status', 'ok', 'Connected — syncing with group');
+}
+
+function renderClassGrid() {
+  const p = cp(); const grid = document.getElementById('classGrid'); grid.innerHTML = '';
+  for (let i=0; i<MAX_CLASSES; i++) {
+    const d = document.createElement('div');
+    d.className = 'class-dot' + (i<(p.classes||0)?' done':'');
+    d.onclick = () => { p.classes = i<(p.classes||0)?i:i+1; renderTracker(); scheduleSave(); };
+    grid.appendChild(d);
+  }
+}
+
+function renderBonusGroup(gridId, list, pts) {
+  const p = cp(); const grid = document.getElementById(gridId); grid.innerHTML = '';
+  list.forEach(b => {
+    const cur = p.bonuses?.[b.id]||0;
+    const note = p.notes?.[b.id]||'';
+    const card = document.createElement('div');
+    card.className = 'bonus-card' + (cur>=b.max&&b.max>0?' done':'');
+    const dotsHtml = Array.from({length:b.max},(_,i)=>`<div class="bdot${i<cur?' done':''}" data-i="${i}"></div>`).join('');
+    card.innerHTML = `
+      <div class="bonus-top">
+        <div style="flex:1"><div class="bonus-name">${b.name}</div><div class="bonus-pts">+${pts} pt${pts>1?'s':''}</div></div>
+        <div class="bdots">${dotsHtml}</div>
+      </div>
+      <div class="proof-row">
+        <input type="text" class="proof-input" placeholder="Proof note..." value="${note.replace(/"/g,'&quot;')}" />
+        <button class="drive-btn${note?' has-proof':''}" onclick="openDrive()">${note?'Proof added':'Upload proof'}</button>
+      </div>
+    `;
+    card.querySelectorAll('.bdot').forEach((dot, i) => {
+      dot.onclick = e => {
+        e.stopPropagation();
+        const c = p.bonuses?.[b.id]||0;
+        if (!p.bonuses) p.bonuses = {};
+        p.bonuses[b.id] = i<c?i:i+1;
+        renderBonusGroup(gridId, list, pts);
+        renderTracker();
+        scheduleSave();
+      };
+    });
+    const noteInput = card.querySelector('.proof-input');
+    noteInput.addEventListener('change', () => {
+      if (!p.notes) p.notes = {};
+      p.notes[b.id] = noteInput.value;
+      scheduleSave();
+      renderBonusGroup(gridId, list, pts);
+    });
+    grid.appendChild(card);
+  });
+}
+
+function renderEarlyBonus() {
+  const p = cp(); const grid = document.getElementById('gridE'); grid.innerHTML = '';
+  const done = p.earlySignup||0; const note = p.notes?.early||'';
+  const card = document.createElement('div');
+  card.className = 'bonus-card' + (done?' done':'');
+  card.innerHTML = `
+    <div class="bonus-top">
+      <div style="flex:1"><div class="bonus-name">First 50 signups</div><div class="bonus-pts">+3 pts</div></div>
+      <div class="bdots"><div class="bdot${done?' done':''}" id="edot"></div></div>
+    </div>
+    <div class="proof-row">
+      <input type="text" class="proof-input" id="early-note" placeholder="Proof note..." value="${note.replace(/"/g,'&quot;')}" />
+      <button class="drive-btn${note?' has-proof':''}" onclick="openDrive()">${note?'Proof added':'Upload proof'}</button>
+    </div>
+  `;
+  card.querySelector('#edot').onclick = e => {
+    e.stopPropagation();
+    p.earlySignup = p.earlySignup?0:1;
+    renderEarlyBonus(); renderTracker(); scheduleSave();
+  };
+  card.querySelector('#early-note').addEventListener('change', e => {
+    if (!p.notes) p.notes = {};
+    p.notes.early = e.target.value;
+    scheduleSave(); renderEarlyBonus();
+  });
+  grid.appendChild(card);
+}
+
+// ── SAVE ─────────────────────────────────────────────────
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  setStatus('status', 'loading', 'Saving...');
+  saveTimer = setTimeout(saveCurrentProfile, 800);
+}
+
+async function saveCurrentProfile() {
+  const p = cp(); if (!p) return;
+  try {
+    const r = await apiPost({action:'saveProfile', id:currentId, data:p});
+    if (r.error) { setStatus('status','error','Save failed — check connection'); return; }
+    setStatus('status','ok','Saved — synced with group');
+    showToast('Saved');
+  } catch(e) {
+    setStatus('status','error','Save failed — check connection');
+  }
+}
+
+// ── LEADERBOARD ──────────────────────────────────────────
+async function loadAndRenderLeaderboard() {
+  setStatus('lb-status','loading','Loading leaderboard...');
+  try {
+    const r = await apiGet({action:'getAll'});
+    if (r.error) { setStatus('lb-status','error','Failed to load'); return; }
+    profiles = r.profiles;
+    renderLeaderboard();
+    setStatus('lb-status','ok','Live leaderboard');
+  } catch(e) {
+    setStatus('lb-status','error','Failed to load — check connection');
+  }
+}
+
+function renderLeaderboard() {
+  const list = document.getElementById('lb-list');
+  const entries = Object.entries(profiles)
+    .map(([id,p])=>({id,p,total:calcTotal(p),entries:Math.floor(calcTotal(p)/12)}))
+    .sort((a,b)=>b.total-a.total);
+  list.innerHTML = '';
+  if (!entries.length) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text2);text-align:center;padding:2rem 0;">No profiles yet.</div>';
+    return;
+  }
+  const ranks = ['1st','2nd','3rd','4th','5th'];
+  entries.forEach((e,i) => {
+    const isMe = e.id===currentId;
+    const row = document.createElement('div');
+    row.className = 'lb-row' + (isMe?' me':'') + (i===0?' first':'');
+    row.innerHTML = `
+      <div class="lb-rank">${ranks[i]||`${i+1}`}</div>
+      <div class="lb-avatar" style="background:${e.p.color}25;color:${e.p.color}">${initials(e.p.name)}</div>
+      <div style="flex:1">
+        <div class="lb-name">${e.p.name}${isMe?' (you)':''}</div>
+        <div class="lb-sub">${e.p.classes||0} classes · ${calcBonus(e.p)} bonus pts</div>
+      </div>
+      <div style="text-align:right">
+        <div class="lb-pts">${e.total}</div>
+        <div class="lb-entries">${e.entries} ${e.entries===1?'entry':'entries'}</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+// ── RESET ────────────────────────────────────────────────
+async function resetCurrent() {
+  if (!confirm('Reset your progress? This cannot be undone.')) return;
+  const p = cp();
+  p.classes=0; p.bonuses={}; p.notes={}; p.earlySignup=0; p.classNote='';
+  renderTracker();
+  await saveCurrentProfile();
+}
+
+// ── INIT ─────────────────────────────────────────────────
+async function init() {
+  if (!scriptUrl) { showScreen('config'); return; }
+  setStatus('status','loading','Connecting...');
+  try {
+    const r = await apiGet({action:'getAll'});
+    if (r.error || r.profiles === undefined) { showScreen('config'); return; }
+    profiles = r.profiles;
+    if (currentId && profiles[currentId]) {
+      showMain();
+    } else {
+      renderAvatarPicker(AV_COLORS[0]);
+      populateSwitcher();
+      showScreen('onboard');
+    }
+  } catch(e) {
+    showScreen('config');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
