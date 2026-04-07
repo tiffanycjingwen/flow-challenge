@@ -606,20 +606,12 @@ function startSwitchProfile() {
 // ── PROFILE SWITCHER ─────────────────────────────────────
 function onProfileSelect(id) {
   if (!id) return;
-  if (id === currentId || unlockedIds.indexOf(id) !== -1) {
-    viewingId = id;
-    expandedClass = null;
-    expandedBonuses = {};
-    renderCurrentAvatar();
-    renderTracker();
-  } else {
-    // Show view-only immediately, offer PIN unlock
-    viewingId = id;
-    expandedClass = null;
-    expandedBonuses = {};
-    renderCurrentAvatar();
-    renderTracker();
-  }
+  viewingId = id;
+  expandedClass = null;
+  expandedBonuses = {};
+  renderProfileSwitcher();
+  renderCurrentAvatar();
+  renderTracker();
 }
 
 // ── MAIN ─────────────────────────────────────────────────
@@ -667,13 +659,14 @@ function renderTracker() {
   // View-only banner
   var banner = document.getElementById('viewonly-banner');
   var resetBtn = document.getElementById('reset-btn');
-  if (!editable) {
+  var isOwn = viewingId === currentId;
+  if (isOwn || editable) {
+    banner.classList.add('hidden');
+    resetBtn.style.display = isOwn ? 'block' : 'none';
+  } else {
     banner.classList.remove('hidden');
     document.getElementById('viewonly-name').textContent = p.name;
     resetBtn.style.display = 'none';
-  } else {
-    banner.classList.add('hidden');
-    resetBtn.style.display = 'block';
   }
 
   renderClassGrid();
