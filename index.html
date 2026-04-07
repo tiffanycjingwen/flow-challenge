@@ -616,6 +616,7 @@ function onProfileSelect(id) {
 
 // ── MAIN ─────────────────────────────────────────────────
 function showMain() {
+  if (!viewingId) viewingId = currentId;
   showScreen('main');
   document.getElementById('main-tabs').style.display = 'flex';
   renderProfileSwitcher();
@@ -659,12 +660,18 @@ function renderTracker() {
   // View-only banner
   var banner = document.getElementById('viewonly-banner');
   var resetBtn = document.getElementById('reset-btn');
-  var isOwn = viewingId === currentId;
-  if (isOwn || editable) {
+  var isOwn = (viewingId === currentId) || (viewingId === '');
+  if (isOwn) {
     banner.classList.add('hidden');
-    resetBtn.style.display = isOwn ? 'block' : 'none';
+    banner.style.display = 'none';
+    resetBtn.style.display = 'block';
+  } else if (editable) {
+    banner.classList.add('hidden');
+    banner.style.display = 'none';
+    resetBtn.style.display = 'none';
   } else {
     banner.classList.remove('hidden');
+    banner.style.display = '';
     document.getElementById('viewonly-name').textContent = p.name;
     resetBtn.style.display = 'none';
   }
