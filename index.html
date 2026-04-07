@@ -801,6 +801,7 @@ async function resetCurrent() {
 
 // ── INIT ─────────────────────────────────────────────────
 async function init() {
+  scriptUrl = 'https://script.google.com/macros/s/AKfycbwbYa58sN5PExUvwm-U-cTbNnQUKhQSySzNnJuGGVes1G0ZanwP6OhlhQkbPXqEvdGI/exec';
   if (!scriptUrl) { showScreen('config'); return; }
   setStatus('status','loading','Connecting...');
   try {
