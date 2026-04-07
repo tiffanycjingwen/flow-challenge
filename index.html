@@ -44,27 +44,61 @@
   .screen { display: none; padding: 20px; }
   .screen.active { display: block; }
 
-  .onboard-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; }
-  .onboard-title { font-family: 'DM Serif Display', serif; font-size: 26px; margin-bottom: 6px; }
-  .onboard-sub { font-size: 14px; color: var(--text2); margin-bottom: 24px; line-height: 1.6; }
+  .card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 24px; }
+  .card-title { font-family: 'DM Serif Display', serif; font-size: 26px; margin-bottom: 6px; }
+  .card-sub { font-size: 14px; color: var(--text2); margin-bottom: 24px; line-height: 1.6; }
   .field-label { font-size: 12px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
-  input[type=text], select { width: 100%; padding: 10px 12px; font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); outline: none; margin-bottom: 16px; transition: border-color 0.15s; }
-  input[type=text]:focus, select:focus { border-color: var(--gold); }
-  .av-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 20px; }
-  .av-opt { aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: border-color 0.15s, transform 0.1s; }
-  .av-opt:hover { transform: scale(1.1); }
-  .av-opt.selected { border-color: var(--text); }
+  input[type=text], input[type=password], select {
+    width: 100%; padding: 10px 12px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+    background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius-sm);
+    color: var(--text); outline: none; margin-bottom: 16px; transition: border-color 0.15s;
+  }
+  input:focus, select:focus { border-color: var(--gold); }
+
+  /* PIN input */
+  .pin-row { display: flex; gap: 10px; margin-bottom: 16px; justify-content: center; }
+  .pin-digit {
+    width: 52px; height: 56px; font-size: 22px; font-weight: 500; text-align: center;
+    font-family: 'DM Sans', sans-serif; background: var(--bg); border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); color: var(--text); outline: none; margin: 0;
+    transition: border-color 0.15s;
+  }
+  .pin-digit:focus { border-color: var(--gold); }
+  .pin-hint { font-size: 12px; color: var(--text3); text-align: center; margin-bottom: 16px; }
+  .error-msg { font-size: 13px; color: var(--red); text-align: center; margin-bottom: 12px; min-height: 20px; }
+
   .btn { width: 100%; padding: 12px; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; border-radius: var(--radius-sm); border: none; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
   .btn:active { transform: scale(0.98); }
   .btn-primary { background: var(--text); color: var(--bg); }
   .btn-secondary { background: var(--surface2); color: var(--text); margin-top: 8px; }
   .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 
-  .profile-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 10px 12px; }
+  .av-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 20px; }
+  .av-opt { aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: border-color 0.15s, transform 0.1s; }
+  .av-opt:hover { transform: scale(1.1); }
+  .av-opt.selected { border-color: var(--text); }
+
+  /* Profile bar */
+  .profile-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 10px 12px; }
   .profile-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
   .profile-bar select { margin: 0; flex: 1; padding: 0; border: none; background: transparent; font-size: 14px; font-weight: 500; }
   .profile-bar select:focus { outline: none; }
 
+  /* View-only banner */
+  .viewonly-banner {
+    background: var(--gold-bg); border: 1px solid rgba(186,117,23,0.3);
+    border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .viewonly-text { font-size: 13px; color: var(--gold-text); }
+  .viewonly-sub { font-size: 11px; color: var(--gold); margin-top: 2px; }
+  .unlock-btn {
+    font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+    padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid rgba(186,117,23,0.4);
+    background: var(--surface); color: var(--gold-text); cursor: pointer; white-space: nowrap;
+  }
+
+  /* Points */
   .pts-banner { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .pts-card { background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 12px; text-align: center; }
   .pts-label { font-size: 11px; color: var(--text3); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -78,31 +112,29 @@
 
   .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin: 20px 0 8px; }
 
-  /* Class grid */
+  /* Class dots */
   .classes-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-  .class-dot { aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--border2); cursor: pointer; background: transparent; transition: background 0.12s, border-color 0.12s, transform 0.1s; position: relative; }
-  .class-dot:hover { transform: scale(1.12); border-color: var(--green); }
+  .class-dot { aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--border2); cursor: pointer; background: transparent; transition: background 0.12s, border-color 0.12s, transform 0.1s; }
+  .class-dot:hover:not(.readonly) { transform: scale(1.12); border-color: var(--green); }
   .class-dot.done { background: var(--green); border-color: var(--green); }
   .class-dot.expanded { box-shadow: 0 0 0 2px var(--green); }
+  .class-dot.readonly { cursor: default; opacity: 0.7; }
 
-  /* Expandable proof panel — for classes */
-  .class-proof-panel {
-    background: var(--surface); border: 1px solid var(--green-border);
-    border-radius: var(--radius-sm); padding: 10px 12px; margin-top: 8px;
-    display: none;
-  }
+  /* Proof panels */
+  .class-proof-panel { background: var(--surface); border: 1px solid var(--green-border); border-radius: var(--radius-sm); padding: 10px 12px; margin-top: 8px; display: none; }
   .class-proof-panel.open { display: block; }
   .proof-panel-label { font-size: 11px; font-weight: 500; color: var(--green-text); margin-bottom: 8px; }
   .proof-input-row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
   .proof-input { flex: 1; padding: 7px 10px; font-size: 13px; font-family: 'DM Sans', sans-serif; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); outline: none; margin: 0; }
   .proof-input:focus { border-color: var(--green-border); }
+  .proof-input[disabled] { opacity: 0.6; cursor: default; }
   .drive-btn { font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif; padding: 7px 11px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: background 0.12s; }
-  .drive-btn:hover { background: var(--surface2); }
+  .drive-btn:hover:not([disabled]) { background: var(--surface2); }
   .drive-btn.has-proof { background: var(--green-bg); color: var(--green-text); border-color: var(--green-border); }
+  .drive-btn[disabled] { opacity: 0.6; cursor: default; }
   .unmark-btn { font-size: 11px; font-family: 'DM Sans', sans-serif; padding: 5px 10px; border-radius: var(--radius-sm); border: 1px solid rgba(226,75,74,0.3); background: var(--red-bg); color: var(--red-text); cursor: pointer; white-space: nowrap; }
-  .unmark-btn:hover { background: #f7c1c1; }
 
-  /* Bonus cards — single column */
+  /* Bonus cards */
   .bonus-list { display: flex; flex-direction: column; gap: 8px; }
   .bonus-card { background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border); overflow: hidden; }
   .bonus-card.done { border-color: var(--green-border); }
@@ -113,17 +145,16 @@
   .bonus-pts-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
   .bonus-card.done .bonus-pts-label { color: var(--green); }
   .bdots { display: flex; gap: 5px; flex-shrink: 0; }
-  .bdot { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border2); cursor: pointer; background: transparent; transition: background 0.12s, border-color 0.12s; flex-shrink: 0; }
-  .bdot:hover { border-color: var(--green); }
+  .bdot { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border2); cursor: pointer; background: transparent; transition: background 0.12s; flex-shrink: 0; }
+  .bdot:hover:not(.readonly) { border-color: var(--green); }
   .bdot.done { background: var(--green); border-color: var(--green); }
   .bdot.expanded { box-shadow: 0 0 0 2px var(--green); }
-
-  /* Bonus proof panel */
+  .bdot.readonly { cursor: default; opacity: 0.7; }
   .bonus-proof-panel { display: none; border-top: 1px solid var(--border); padding: 10px 14px; background: var(--green-bg); }
   .bonus-proof-panel.open { display: block; }
   .bonus-card.done .bonus-proof-panel { border-top-color: var(--green-border); }
 
-  /* Status bar */
+  /* Status */
   .status-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface2); border-radius: var(--radius-sm); font-size: 12px; color: var(--text2); margin-bottom: 16px; }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
   .status-dot.loading { background: var(--gold); animation: pulse 1s infinite; }
@@ -143,14 +174,48 @@
   .lb-pts { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); }
   .lb-entries { font-size: 11px; color: var(--text2); text-align: right; }
 
+  /* PIN modal overlay */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(44,36,22,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 28px; width: 100%; max-width: 340px; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 6px; }
+  .modal-sub { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.6; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 4px; }
+  .modal-actions .btn { margin: 0; }
+  .btn-ghost { background: var(--surface2); color: var(--text2); }
+
   .reset-link { font-size: 12px; color: var(--text3); background: none; border: none; cursor: pointer; padding: 0; margin-top: 20px; text-decoration: underline; font-family: 'DM Sans', sans-serif; }
-  .saving-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); font-size: 12px; padding: 8px 16px; border-radius: 20px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 100; white-space: nowrap; }
+  .saving-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); font-size: 12px; padding: 8px 16px; border-radius: 20px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 200; white-space: nowrap; }
   .saving-toast.show { opacity: 1; }
   .credit { text-align: center; padding: 24px 20px 32px; font-size: 12px; color: var(--text3); line-height: 1.7; }
   .credit strong { color: var(--text2); }
 </style>
 </head>
 <body>
+
+<!-- PIN modal -->
+<div class="modal-overlay hidden" id="pin-modal">
+  <div class="modal-card">
+    <div class="modal-title" id="pin-modal-title">Enter your PIN</div>
+    <div class="modal-sub" id="pin-modal-sub">Enter your 4-digit PIN to unlock your profile.</div>
+    <div class="pin-row">
+      <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="pin0" />
+      <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="pin1" />
+      <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="pin2" />
+      <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="pin3" />
+    </div>
+    <div class="error-msg" id="pin-error"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closePinModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitPin()">Unlock</button>
+    </div>
+  </div>
+</div>
+
 <div class="app">
   <div class="header">
     <div class="header-top">
@@ -162,33 +227,53 @@
     </div>
   </div>
 
+  <!-- Onboard -->
   <div class="screen active" id="screen-onboard">
-    <div class="onboard-card">
-      <div class="onboard-title">Join the challenge</div>
-      <p class="onboard-sub">Create your profile. Your progress will sync with your group in real time.</p>
+    <div class="card">
+      <div class="card-title">Join the challenge</div>
+      <p class="card-sub">Create your profile and set a PIN to protect your progress.</p>
       <div class="field-label">Your name</div>
       <input type="text" id="ob-name" placeholder="e.g. Aisha" maxlength="24" />
       <div class="field-label">Pick a colour</div>
       <div class="av-grid" id="av-picker"></div>
+      <div class="field-label">Set your PIN</div>
+      <div class="pin-hint">Choose a 4-digit PIN — you'll need this to edit your profile</div>
+      <div class="pin-row">
+        <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="new-pin0" />
+        <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="new-pin1" />
+        <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="new-pin2" />
+        <input class="pin-digit" type="password" maxlength="1" inputmode="numeric" id="new-pin3" />
+      </div>
       <button class="btn btn-primary" onclick="createProfile()" id="create-btn">Join the challenge</button>
       <hr class="divider" />
       <div class="field-label">Already have a profile?</div>
       <select id="ob-switch"></select>
-      <button class="btn btn-secondary" onclick="switchProfile()">Switch to this profile</button>
+      <button class="btn btn-secondary" onclick="startSwitchProfile()">Switch to this profile</button>
     </div>
   </div>
 
+  <!-- Main -->
   <div class="screen" id="screen-main">
     <div id="tab-tracker">
       <div class="profile-bar">
         <div class="profile-avatar" id="current-avatar"></div>
-        <select id="profile-switcher" onchange="switchToProfile(this.value)"></select>
+        <select id="profile-switcher" onchange="onProfileSelect(this.value)"></select>
         <button onclick="goOnboard()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;border-radius:var(--radius-sm);cursor:pointer;padding:6px 10px;white-space:nowrap;">+ New</button>
       </div>
+
+      <div class="viewonly-banner hidden" id="viewonly-banner">
+        <div>
+          <div class="viewonly-text">Viewing <span id="viewonly-name"></span>'s tracker</div>
+          <div class="viewonly-sub">View only — enter PIN to edit</div>
+        </div>
+        <button class="unlock-btn" onclick="promptPin('unlock')">Enter PIN</button>
+      </div>
+
       <div class="status-bar">
         <div class="status-dot" id="status-dot"></div>
         <span id="status-text">Connected</span>
       </div>
+
       <div class="pts-banner">
         <div class="pts-card"><div class="pts-label">Classes</div><div class="pts-num" id="classCount">0</div><div class="pts-sub">of 21 pts</div></div>
         <div class="pts-card"><div class="pts-label">Bonus</div><div class="pts-num" id="bonusCount">0</div><div class="pts-sub">pts earned</div></div>
@@ -204,7 +289,6 @@
 
       <div class="section-title">Classes attended</div>
       <div id="classGrid"></div>
-
       <div class="section-title">+1 pt bonuses</div>
       <div class="bonus-list" id="grid1"></div>
       <div class="section-title">+2 pt bonuses</div>
@@ -216,7 +300,7 @@
       <div class="section-title">Early signup</div>
       <div class="bonus-list" id="gridE"></div>
 
-      <button class="reset-link" onclick="resetCurrent()">Reset my progress</button>
+      <button class="reset-link" id="reset-btn" onclick="resetCurrent()">Reset my progress</button>
     </div>
 
     <div id="tab-leaderboard" style="display:none;">
@@ -237,12 +321,14 @@
     <span style="font-size:11px;">because Flow was doing manual insanity and someone had to fix it.</span>
   </div>
 </div>
+
 <div class="saving-toast" id="toast"></div>
 
 <script>
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbYa58sN5PExUvwm-U-cTbNnQUKhQSySzNnJuGGVes1G0ZanwP6OhlhQkbPXqEvdGI/exec';
 var DRIVE_URL = 'https://drive.google.com/drive/folders/1WaEOliYqb-Ih5MMBVH_pcdyhX5o4t4E0';
-var CURRENT_KEY = 'flow_current_id_v3';
+var CURRENT_KEY = 'flow_current_id_v4';
+var UNLOCKED_KEY = 'flow_unlocked_v4';
 var AV_COLORS = ['#1D9E75','#378ADD','#D4537E','#D85A30','#7F77DD','#BA7517'];
 var MAX_CLASSES = 21;
 
@@ -270,11 +356,48 @@ var B5 = [
 
 var profiles = {};
 var currentId = localStorage.getItem(CURRENT_KEY) || '';
+var unlockedIds = JSON.parse(sessionStorage.getItem(UNLOCKED_KEY) || '[]');
 var saveTimer = null;
 var expandedClass = null;
 var expandedBonuses = {};
+var pinCallback = null;
+var viewingId = '';
 
+function isEditable() { return unlockedIds.indexOf(viewingId) !== -1; }
 function openDrive() { window.open(DRIVE_URL, '_blank'); }
+
+function hashPin(pin) {
+  var h = 0;
+  for (var i = 0; i < pin.length; i++) { h = (Math.imul(31, h) + pin.charCodeAt(i)) | 0; }
+  return h.toString(36);
+}
+
+function getPinValue(prefix) {
+  var pin = '';
+  for (var i = 0; i < 4; i++) {
+    pin += document.getElementById(prefix + i).value;
+  }
+  return pin;
+}
+
+function clearPinInputs(prefix) {
+  for (var i = 0; i < 4; i++) { document.getElementById(prefix + i).value = ''; }
+}
+
+function setupPinInputs(prefix) {
+  for (var i = 0; i < 4; i++) {
+    (function(idx) {
+      var input = document.getElementById(prefix + idx);
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').slice(-1);
+        if (this.value && idx < 3) document.getElementById(prefix + (idx+1)).focus();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && idx > 0) document.getElementById(prefix + (idx-1)).focus();
+      });
+    })(i);
+  }
+}
 
 function showToast(msg) {
   var t = document.getElementById('toast');
@@ -325,11 +448,78 @@ function showTab(name) {
   document.getElementById('tab-tracker').style.display = name === 'tracker' ? 'block' : 'none';
   document.getElementById('tab-leaderboard').style.display = name === 'leaderboard' ? 'block' : 'none';
   document.querySelectorAll('.tab-btn').forEach(function(b, i) {
-    b.classList.toggle('active', (i===0 && name==='tracker') || (i===1 && name==='leaderboard'));
+    b.classList.toggle('active', (i===0&&name==='tracker')||(i===1&&name==='leaderboard'));
   });
   if (name === 'leaderboard') loadLeaderboard();
 }
 
+// ── PIN MODAL ────────────────────────────────────────────
+function promptPin(mode, targetId) {
+  var modal = document.getElementById('pin-modal');
+  var title = document.getElementById('pin-modal-title');
+  var sub = document.getElementById('pin-modal-sub');
+  document.getElementById('pin-error').textContent = '';
+  clearPinInputs('pin');
+
+  if (mode === 'unlock') {
+    var name = profiles[viewingId] ? profiles[viewingId].name : 'this profile';
+    title.textContent = 'Enter PIN';
+    sub.textContent = 'Enter ' + name + "'s PIN to edit their tracker.";
+    pinCallback = function(pin) {
+      var p = profiles[viewingId];
+      if (!p || !p.pinHash) return false;
+      if (hashPin(pin) !== p.pinHash) return false;
+      if (unlockedIds.indexOf(viewingId) === -1) unlockedIds.push(viewingId);
+      sessionStorage.setItem(UNLOCKED_KEY, JSON.stringify(unlockedIds));
+      return true;
+    };
+  } else if (mode === 'switch') {
+    var name2 = profiles[targetId] ? profiles[targetId].name : 'this profile';
+    title.textContent = 'Enter PIN';
+    sub.textContent = 'Enter ' + name2 + "'s PIN to switch to their profile.";
+    pinCallback = function(pin) {
+      var p = profiles[targetId];
+      if (!p || !p.pinHash) return false;
+      if (hashPin(pin) !== p.pinHash) return false;
+      currentId = targetId;
+      viewingId = targetId;
+      localStorage.setItem(CURRENT_KEY, currentId);
+      if (unlockedIds.indexOf(targetId) === -1) unlockedIds.push(targetId);
+      sessionStorage.setItem(UNLOCKED_KEY, JSON.stringify(unlockedIds));
+      return true;
+    };
+  }
+
+  modal.classList.remove('hidden');
+  setTimeout(function() { document.getElementById('pin0').focus(); }, 100);
+}
+
+function submitPin() {
+  var pin = getPinValue('pin');
+  if (pin.length < 4) { document.getElementById('pin-error').textContent = 'Please enter all 4 digits.'; return; }
+  if (!pinCallback || !pinCallback(pin)) {
+    document.getElementById('pin-error').textContent = 'Incorrect PIN. Try again.';
+    clearPinInputs('pin');
+    document.getElementById('pin0').focus();
+    return;
+  }
+  closePinModal();
+  expandedClass = null;
+  expandedBonuses = {};
+  showMain();
+}
+
+function closePinModal() {
+  document.getElementById('pin-modal').classList.add('hidden');
+  clearPinInputs('pin');
+  document.getElementById('pin-error').textContent = '';
+  pinCallback = null;
+  // Reset switcher to current viewing id
+  var sel = document.getElementById('profile-switcher');
+  if (sel) sel.value = viewingId;
+}
+
+// ── ONBOARD ──────────────────────────────────────────────
 function renderAvatarPicker(selected) {
   var el = document.getElementById('av-picker');
   el.innerHTML = '';
@@ -362,6 +552,7 @@ function populateSwitcher() {
 
 function goOnboard() {
   renderAvatarPicker(AV_COLORS[0]);
+  clearPinInputs('new-pin');
   populateSwitcher();
   showScreen('onboard');
   document.getElementById('main-tabs').style.display = 'none';
@@ -370,14 +561,22 @@ function goOnboard() {
 function createProfile() {
   var name = document.getElementById('ob-name').value.trim();
   if (!name) { alert('Please enter your name.'); return; }
+  var pin = getPinValue('new-pin');
+  if (pin.length < 4) { alert('Please set a 4-digit PIN.'); return; }
   var color = getSelectedColor();
+  var pinHash = hashPin(pin);
   var btn = document.getElementById('create-btn');
   btn.textContent = 'Creating...'; btn.disabled = true;
   apiPost({action:'createProfile', name:name, color:color}).then(function(r) {
     if (r.error) { alert('Error: ' + r.error); return; }
-    profiles[r.id] = {name:name, color:color, classes:0, bonuses:{}, notes:{}, classNotes:{}, earlySignup:0};
+    profiles[r.id] = {name:name, color:color, classes:0, bonuses:{}, notes:{}, classNotes:{}, earlySignup:0, pinHash:pinHash};
+    // Save pin hash to backend
+    apiPost({action:'saveProfile', id:r.id, data:profiles[r.id]});
     currentId = r.id;
+    viewingId = r.id;
     localStorage.setItem(CURRENT_KEY, currentId);
+    if (unlockedIds.indexOf(r.id) === -1) unlockedIds.push(r.id);
+    sessionStorage.setItem(UNLOCKED_KEY, JSON.stringify(unlockedIds));
     expandedClass = null;
     expandedBonuses = {};
     showMain();
@@ -388,25 +587,42 @@ function createProfile() {
   });
 }
 
-function switchProfile() {
+function startSwitchProfile() {
   var id = document.getElementById('ob-switch').value;
   if (!id) return;
-  currentId = id;
-  localStorage.setItem(CURRENT_KEY, currentId);
-  expandedClass = null;
-  expandedBonuses = {};
-  showMain();
+  // If already unlocked this session, switch directly
+  if (id === currentId || unlockedIds.indexOf(id) !== -1) {
+    currentId = id;
+    viewingId = id;
+    localStorage.setItem(CURRENT_KEY, currentId);
+    expandedClass = null;
+    expandedBonuses = {};
+    showMain();
+  } else {
+    promptPin('switch', id);
+  }
 }
 
-function switchToProfile(id) {
-  currentId = id;
-  localStorage.setItem(CURRENT_KEY, currentId);
-  expandedClass = null;
-  expandedBonuses = {};
-  renderCurrentAvatar();
-  renderTracker();
+// ── PROFILE SWITCHER ─────────────────────────────────────
+function onProfileSelect(id) {
+  if (!id || id === viewingId) return;
+  if (id === currentId || unlockedIds.indexOf(id) !== -1) {
+    viewingId = id;
+    expandedClass = null;
+    expandedBonuses = {};
+    renderCurrentAvatar();
+    renderTracker();
+  } else {
+    // Show view-only immediately, offer PIN unlock
+    viewingId = id;
+    expandedClass = null;
+    expandedBonuses = {};
+    renderCurrentAvatar();
+    renderTracker();
+  }
 }
 
+// ── MAIN ─────────────────────────────────────────────────
 function showMain() {
   showScreen('main');
   document.getElementById('main-tabs').style.display = 'flex';
@@ -422,46 +638,61 @@ function renderProfileSwitcher() {
     var o = document.createElement('option');
     o.value = id;
     o.textContent = profiles[id].name + (id === currentId ? ' (you)' : '');
-    if (id === currentId) o.selected = true;
+    if (id === viewingId) o.selected = true;
     sel.appendChild(o);
   });
 }
 
 function renderCurrentAvatar() {
-  var p = profiles[currentId]; if (!p) return;
+  var p = profiles[viewingId]; if (!p) return;
   var el = document.getElementById('current-avatar');
   el.style.background = p.color + '30';
   el.style.color = p.color;
   el.textContent = initials(p.name);
 }
 
-function cp() { return profiles[currentId]; }
+function vp() { return profiles[viewingId]; }
 
 function renderTracker() {
-  var p = cp(); if (!p) return;
+  var p = vp(); if (!p) return;
+  var editable = isEditable();
   var bonus = calcBonus(p);
   var total = (p.classes || 0) + bonus;
+
   document.getElementById('classCount').textContent = p.classes || 0;
   document.getElementById('bonusCount').textContent = bonus;
   document.getElementById('totalCount').textContent = total;
   document.getElementById('luckyCount').textContent = Math.floor(total / 12);
+
+  // View-only banner
+  var banner = document.getElementById('viewonly-banner');
+  var resetBtn = document.getElementById('reset-btn');
+  if (!editable) {
+    banner.classList.remove('hidden');
+    document.getElementById('viewonly-name').textContent = p.name;
+    resetBtn.style.display = 'none';
+  } else {
+    banner.classList.add('hidden');
+    resetBtn.style.display = 'block';
+  }
+
   renderClassGrid();
   renderBonusGroup('grid1', B1, 1);
   renderBonusGroup('grid2', B2, 2);
   renderBonusGroup('grid3', B3, 3);
   renderBonusGroup('grid5', B5, 5);
   renderEarlyBonus();
-  setStatus('status', 'ok', 'Connected — syncing with group');
+  setStatus('status', 'ok', editable ? 'Connected — syncing with group' : 'Viewing ' + p.name + "'s tracker");
 }
 
+// ── CLASS GRID ───────────────────────────────────────────
 function renderClassGrid() {
-  var p = cp();
+  var p = vp();
+  var editable = isEditable();
   var container = document.getElementById('classGrid');
   container.innerHTML = '';
-
   if (!p.classNotes) p.classNotes = {};
 
-  // On first load, default expanded to last attended class
   if (expandedClass === null && (p.classes || 0) > 0) {
     expandedClass = (p.classes || 0) - 1;
   }
@@ -472,35 +703,31 @@ function renderClassGrid() {
   for (var i = 0; i < MAX_CLASSES; i++) {
     (function(idx) {
       var isDone = idx < (p.classes || 0);
-      var isExpanded = expandedClass === idx && isDone;
-
+      var isExp = expandedClass === idx && isDone;
       var dot = document.createElement('div');
-      dot.className = 'class-dot' + (isDone ? ' done' : '') + (isExpanded ? ' expanded' : '');
+      dot.className = 'class-dot' + (isDone ? ' done' : '') + (isExp ? ' expanded' : '') + (!editable ? ' readonly' : '');
       dot.title = 'Class ' + (idx + 1);
-
       dot.onclick = function() {
+        if (!editable) return;
         if (!isDone) {
-          // Mark this class and all before it
           p.classes = idx + 1;
           expandedClass = idx;
           renderTracker();
           scheduleSave();
         } else {
-          // Toggle proof panel open/close
           expandedClass = expandedClass === idx ? -1 : idx;
           renderClassGrid();
         }
       };
-
       dotGrid.appendChild(dot);
     })(i);
   }
   container.appendChild(dotGrid);
 
-  // Render expanded proof panel for the currently expanded class
   if (expandedClass !== null && expandedClass >= 0 && expandedClass < (p.classes || 0)) {
     (function(idx) {
       var note = (p.classNotes && p.classNotes[idx]) || '';
+      var editable2 = isEditable();
       var panel = document.createElement('div');
       panel.className = 'class-proof-panel open';
 
@@ -515,62 +742,64 @@ function renderClassGrid() {
       var input = document.createElement('input');
       input.type = 'text';
       input.className = 'proof-input';
-      input.placeholder = 'Add a note (e.g. reformer class, 7 Apr)';
+      input.placeholder = editable2 ? 'Add a note (e.g. reformer class, 7 Apr)' : 'No note added';
       input.value = note;
-      input.addEventListener('change', function() {
-        if (!p.classNotes) p.classNotes = {};
-        p.classNotes[idx] = input.value;
-        driveBtn.className = 'drive-btn' + (input.value ? ' has-proof' : '');
-        driveBtn.textContent = input.value ? 'Proof added' : 'Upload proof';
-        scheduleSave();
-      });
+      input.disabled = !editable2;
+      if (editable2) {
+        input.addEventListener('change', function() {
+          if (!p.classNotes) p.classNotes = {};
+          p.classNotes[idx] = input.value;
+          driveBtn.className = 'drive-btn' + (input.value ? ' has-proof' : '');
+          driveBtn.textContent = input.value ? 'Proof added' : 'Upload proof';
+          scheduleSave();
+        });
+      }
 
       var driveBtn = document.createElement('button');
       driveBtn.className = 'drive-btn' + (note ? ' has-proof' : '');
       driveBtn.textContent = note ? 'Proof added' : 'Upload proof';
-      driveBtn.onclick = function() { openDrive(); };
+      driveBtn.disabled = !editable2;
+      driveBtn.onclick = function() { if (editable2) openDrive(); };
 
       inputRow.appendChild(input);
       inputRow.appendChild(driveBtn);
       panel.appendChild(inputRow);
 
-      var unmarkBtn = document.createElement('button');
-      unmarkBtn.className = 'unmark-btn';
-      unmarkBtn.textContent = 'Unmark class ' + (idx + 1);
-      unmarkBtn.onclick = function() {
-        if (!confirm('Unmark Class ' + (idx + 1) + '? This will also unmark any classes after it.')) return;
-        p.classes = idx;
-        if (p.classNotes) {
-          for (var k = idx; k < MAX_CLASSES; k++) { delete p.classNotes[k]; }
-        }
-        expandedClass = idx > 0 ? idx - 1 : null;
-        renderTracker();
-        scheduleSave();
-      };
-      panel.appendChild(unmarkBtn);
+      if (editable2) {
+        var unmarkBtn = document.createElement('button');
+        unmarkBtn.className = 'unmark-btn';
+        unmarkBtn.textContent = 'Unmark class ' + (idx + 1);
+        unmarkBtn.onclick = function() {
+          if (!confirm('Unmark Class ' + (idx+1) + '? This will also unmark later classes.')) return;
+          p.classes = idx;
+          if (p.classNotes) { for (var k = idx; k < MAX_CLASSES; k++) delete p.classNotes[k]; }
+          expandedClass = idx > 0 ? idx - 1 : null;
+          renderTracker();
+          scheduleSave();
+        };
+        panel.appendChild(unmarkBtn);
+      }
 
       container.appendChild(panel);
     })(expandedClass);
   }
 }
 
+// ── BONUS GROUP ──────────────────────────────────────────
 function renderBonusGroup(gridId, list, pts) {
-  var p = cp();
+  var p = vp();
+  var editable = isEditable();
   var grid = document.getElementById(gridId);
   grid.innerHTML = '';
 
   list.forEach(function(b) {
     var cur = (p.bonuses && p.bonuses[b.id]) || 0;
-    var note = (p.notes && p.notes[b.id]) || '';
     var isDone = cur >= b.max && b.max > 0;
-
     var card = document.createElement('div');
     card.className = 'bonus-card' + (isDone ? ' done' : '');
 
-    // Head row
     var head = document.createElement('div');
     head.className = 'bonus-head';
-
     var info = document.createElement('div');
     info.className = 'bonus-info';
     var nameEl = document.createElement('div');
@@ -586,28 +815,26 @@ function renderBonusGroup(gridId, list, pts) {
     dotsEl.className = 'bdots';
 
     for (var i = 0; i < b.max; i++) {
-      (function(dotIdx, bonusId) {
+      (function(dotIdx, bid) {
         var isDotDone = dotIdx < cur;
-        var isExpanded = expandedBonuses[bonusId] === dotIdx && isDotDone;
-
+        var isExp = expandedBonuses[bid] === dotIdx && isDotDone;
         var dot = document.createElement('div');
-        dot.className = 'bdot' + (isDotDone ? ' done' : '') + (isExpanded ? ' expanded' : '');
-
+        dot.className = 'bdot' + (isDotDone ? ' done' : '') + (isExp ? ' expanded' : '') + (!editable ? ' readonly' : '');
         dot.onclick = function(e) {
           e.stopPropagation();
+          if (!editable) return;
           if (!isDotDone) {
             if (!p.bonuses) p.bonuses = {};
-            p.bonuses[bonusId] = dotIdx + 1;
-            expandedBonuses[bonusId] = dotIdx;
+            p.bonuses[bid] = dotIdx + 1;
+            expandedBonuses[bid] = dotIdx;
             renderBonusGroup(gridId, list, pts);
             renderTracker();
             scheduleSave();
           } else {
-            expandedBonuses[bonusId] = expandedBonuses[bonusId] === dotIdx ? -1 : dotIdx;
+            expandedBonuses[bid] = expandedBonuses[bid] === dotIdx ? -1 : dotIdx;
             renderBonusGroup(gridId, list, pts);
           }
         };
-
         dotsEl.appendChild(dot);
       })(i, b.id);
     }
@@ -616,82 +843,91 @@ function renderBonusGroup(gridId, list, pts) {
     head.appendChild(dotsEl);
     card.appendChild(head);
 
-    // Proof panel — shows for the currently expanded dot
-    var expandedDot = expandedBonuses[b.id];
-    if (expandedDot !== undefined && expandedDot >= 0 && expandedDot < cur) {
+    var expDot = expandedBonuses[b.id];
+    if (expDot !== undefined && expDot >= 0 && expDot < cur) {
       (function(dotIdx) {
+        var noteKey = b.id + (b.max > 1 ? '_' + dotIdx : '');
+        var existingNote = (p.notes && p.notes[noteKey]) || '';
+        var editable2 = isEditable();
+
         var panel = document.createElement('div');
         panel.className = 'bonus-proof-panel open';
 
         var panelLabel = document.createElement('div');
         panelLabel.className = 'proof-panel-label';
-        panelLabel.textContent = b.name + (b.max > 1 ? ' #' + (dotIdx + 1) : '') + ' — proof';
+        panelLabel.textContent = b.name + (b.max > 1 ? ' #' + (dotIdx+1) : '') + ' — proof';
         panel.appendChild(panelLabel);
 
         var inputRow = document.createElement('div');
         inputRow.className = 'proof-input-row';
 
-        var noteKey = b.id + (b.max > 1 ? '_' + dotIdx : '');
-        var existingNote = (p.notes && p.notes[noteKey]) || '';
-
         var input = document.createElement('input');
         input.type = 'text';
         input.className = 'proof-input';
-        input.placeholder = 'Add a proof note...';
+        input.placeholder = editable2 ? 'Add a proof note...' : 'No note added';
         input.value = existingNote;
-        input.addEventListener('change', function() {
-          if (!p.notes) p.notes = {};
-          p.notes[noteKey] = input.value;
-          driveBtn.className = 'drive-btn' + (input.value ? ' has-proof' : '');
-          driveBtn.textContent = input.value ? 'Proof added' : 'Upload proof';
-          scheduleSave();
-        });
+        input.disabled = !editable2;
 
         var driveBtn = document.createElement('button');
         driveBtn.className = 'drive-btn' + (existingNote ? ' has-proof' : '');
         driveBtn.textContent = existingNote ? 'Proof added' : 'Upload proof';
-        driveBtn.onclick = function() { openDrive(); };
+        driveBtn.disabled = !editable2;
+        driveBtn.onclick = function() { if (editable2) openDrive(); };
+
+        if (editable2) {
+          input.addEventListener('change', function() {
+            if (!p.notes) p.notes = {};
+            p.notes[noteKey] = input.value;
+            driveBtn.className = 'drive-btn' + (input.value ? ' has-proof' : '');
+            driveBtn.textContent = input.value ? 'Proof added' : 'Upload proof';
+            scheduleSave();
+          });
+        }
 
         inputRow.appendChild(input);
         inputRow.appendChild(driveBtn);
         panel.appendChild(inputRow);
 
-        var unmarkBtn = document.createElement('button');
-        unmarkBtn.className = 'unmark-btn';
-        unmarkBtn.textContent = 'Unmark this completion';
-        unmarkBtn.onclick = function() {
-          if (!confirm('Unmark this completion?')) return;
-          if (!p.bonuses) p.bonuses = {};
-          p.bonuses[b.id] = dotIdx;
-          if (p.notes) delete p.notes[noteKey];
-          delete expandedBonuses[b.id];
-          renderBonusGroup(gridId, list, pts);
-          renderTracker();
-          scheduleSave();
-        };
-        panel.appendChild(unmarkBtn);
+        if (editable2) {
+          var unmarkBtn = document.createElement('button');
+          unmarkBtn.className = 'unmark-btn';
+          unmarkBtn.textContent = 'Unmark this completion';
+          unmarkBtn.onclick = function() {
+            if (!confirm('Unmark this completion?')) return;
+            if (!p.bonuses) p.bonuses = {};
+            p.bonuses[b.id] = dotIdx;
+            if (p.notes) delete p.notes[noteKey];
+            delete expandedBonuses[b.id];
+            renderBonusGroup(gridId, list, pts);
+            renderTracker();
+            scheduleSave();
+          };
+          panel.appendChild(unmarkBtn);
+        }
+
         card.appendChild(panel);
-      })(expandedDot);
+      })(expDot);
     }
 
     grid.appendChild(card);
   });
 }
 
+// ── EARLY BONUS ──────────────────────────────────────────
 function renderEarlyBonus() {
-  var p = cp();
+  var p = vp();
+  var editable = isEditable();
   var grid = document.getElementById('gridE');
   grid.innerHTML = '';
   var done = p.earlySignup || 0;
   var note = (p.notes && p.notes['early']) || '';
-  var isExpanded = expandedBonuses['early'] === 0 && done;
+  var isExp = expandedBonuses['early'] === 0 && done;
 
   var card = document.createElement('div');
   card.className = 'bonus-card' + (done ? ' done' : '');
 
   var head = document.createElement('div');
   head.className = 'bonus-head';
-
   var info = document.createElement('div');
   info.className = 'bonus-info';
   var nameEl = document.createElement('div');
@@ -706,15 +942,14 @@ function renderEarlyBonus() {
   var dotsEl = document.createElement('div');
   dotsEl.className = 'bdots';
   var dot = document.createElement('div');
-  dot.className = 'bdot' + (done ? ' done' : '') + (isExpanded ? ' expanded' : '');
+  dot.className = 'bdot' + (done ? ' done' : '') + (isExp ? ' expanded' : '') + (!editable ? ' readonly' : '');
   dot.onclick = function(e) {
     e.stopPropagation();
+    if (!editable) return;
     if (!done) {
       p.earlySignup = 1;
       expandedBonuses['early'] = 0;
-      renderEarlyBonus();
-      renderTracker();
-      scheduleSave();
+      renderEarlyBonus(); renderTracker(); scheduleSave();
     } else {
       expandedBonuses['early'] = expandedBonuses['early'] === 0 ? -1 : 0;
       renderEarlyBonus();
@@ -725,10 +960,9 @@ function renderEarlyBonus() {
   head.appendChild(dotsEl);
   card.appendChild(head);
 
-  if (isExpanded) {
+  if (isExp) {
     var panel = document.createElement('div');
     panel.className = 'bonus-proof-panel open';
-
     var panelLabel = document.createElement('div');
     panelLabel.className = 'proof-panel-label';
     panelLabel.textContent = 'First 50 signups — proof';
@@ -736,48 +970,52 @@ function renderEarlyBonus() {
 
     var inputRow = document.createElement('div');
     inputRow.className = 'proof-input-row';
-
     var input = document.createElement('input');
     input.type = 'text';
     input.className = 'proof-input';
-    input.placeholder = 'Add a proof note...';
+    input.placeholder = editable ? 'Add a proof note...' : 'No note added';
     input.value = note;
-    input.addEventListener('change', function() {
-      if (!p.notes) p.notes = {};
-      p.notes['early'] = input.value;
-      driveBtn.className = 'drive-btn' + (input.value ? ' has-proof' : '');
-      driveBtn.textContent = input.value ? 'Proof added' : 'Upload proof';
-      scheduleSave();
-    });
+    input.disabled = !editable;
 
     var driveBtn = document.createElement('button');
     driveBtn.className = 'drive-btn' + (note ? ' has-proof' : '');
     driveBtn.textContent = note ? 'Proof added' : 'Upload proof';
-    driveBtn.onclick = function() { openDrive(); };
+    driveBtn.disabled = !editable;
+    driveBtn.onclick = function() { if (editable) openDrive(); };
 
+    if (editable) {
+      input.addEventListener('change', function() {
+        if (!p.notes) p.notes = {};
+        p.notes['early'] = input.value;
+        driveBtn.className = 'drive-btn' + (input.value ? ' has-proof' : '');
+        driveBtn.textContent = input.value ? 'Proof added' : 'Upload proof';
+        scheduleSave();
+      });
+    }
     inputRow.appendChild(input);
     inputRow.appendChild(driveBtn);
     panel.appendChild(inputRow);
 
-    var unmarkBtn = document.createElement('button');
-    unmarkBtn.className = 'unmark-btn';
-    unmarkBtn.textContent = 'Unmark this';
-    unmarkBtn.onclick = function() {
-      if (!confirm('Unmark early signup bonus?')) return;
-      p.earlySignup = 0;
-      if (p.notes) delete p.notes['early'];
-      delete expandedBonuses['early'];
-      renderEarlyBonus();
-      renderTracker();
-      scheduleSave();
-    };
-    panel.appendChild(unmarkBtn);
+    if (editable) {
+      var unmarkBtn = document.createElement('button');
+      unmarkBtn.className = 'unmark-btn';
+      unmarkBtn.textContent = 'Unmark this';
+      unmarkBtn.onclick = function() {
+        if (!confirm('Unmark early signup bonus?')) return;
+        p.earlySignup = 0;
+        if (p.notes) delete p.notes['early'];
+        delete expandedBonuses['early'];
+        renderEarlyBonus(); renderTracker(); scheduleSave();
+      };
+      panel.appendChild(unmarkBtn);
+    }
     card.appendChild(panel);
   }
 
   grid.appendChild(card);
 }
 
+// ── SAVE ─────────────────────────────────────────────────
 function scheduleSave() {
   clearTimeout(saveTimer);
   setStatus('status', 'loading', 'Saving...');
@@ -785,8 +1023,8 @@ function scheduleSave() {
 }
 
 function saveCurrentProfile() {
-  var p = cp(); if (!p) return;
-  apiPost({action:'saveProfile', id:currentId, data:p}).then(function(r) {
+  var p = vp(); if (!p || !isEditable()) return;
+  apiPost({action:'saveProfile', id:viewingId, data:p}).then(function(r) {
     if (r.error) { setStatus('status','error','Save failed'); return; }
     setStatus('status','ok','Saved — synced with group');
     showToast('Saved');
@@ -795,6 +1033,7 @@ function saveCurrentProfile() {
   });
 }
 
+// ── LEADERBOARD ──────────────────────────────────────────
 function loadLeaderboard() {
   setStatus('lb-status','loading','Loading leaderboard...');
   apiGet({action:'getAll'}).then(function(r) {
@@ -802,9 +1041,7 @@ function loadLeaderboard() {
     profiles = r.profiles;
     renderLeaderboard();
     setStatus('lb-status','ok','Live leaderboard');
-  }).catch(function() {
-    setStatus('lb-status','error','Failed to load');
-  });
+  }).catch(function() { setStatus('lb-status','error','Failed to load'); });
 }
 
 function renderLeaderboard() {
@@ -821,63 +1058,54 @@ function renderLeaderboard() {
   entries.forEach(function(e, i) {
     var isMe = e.id === currentId;
     var row = document.createElement('div');
-    row.className = 'lb-row' + (isMe ? ' me' : '') + (i === 0 ? ' first' : '');
-
+    row.className = 'lb-row' + (isMe ? ' me' : '') + (i===0 ? ' first' : '');
     var rank = document.createElement('div');
     rank.className = 'lb-rank'; rank.textContent = ranks[i] || (i+1)+'th';
-
     var avatar = document.createElement('div');
     avatar.className = 'lb-avatar';
-    avatar.style.background = e.p.color + '25';
-    avatar.style.color = e.p.color;
+    avatar.style.background = e.p.color + '25'; avatar.style.color = e.p.color;
     avatar.textContent = initials(e.p.name);
-
-    var info = document.createElement('div');
-    info.style.flex = '1';
-    var nameEl = document.createElement('div');
-    nameEl.className = 'lb-name';
+    var info = document.createElement('div'); info.style.flex = '1';
+    var nameEl = document.createElement('div'); nameEl.className = 'lb-name';
     nameEl.textContent = e.p.name + (isMe ? ' (you)' : '');
-    var subEl = document.createElement('div');
-    subEl.className = 'lb-sub';
+    var subEl = document.createElement('div'); subEl.className = 'lb-sub';
     subEl.textContent = (e.p.classes||0) + ' classes · ' + calcBonus(e.p) + ' bonus pts';
-    info.appendChild(nameEl);
-    info.appendChild(subEl);
-
-    var pts = document.createElement('div');
-    pts.style.textAlign = 'right';
-    var ptsNum = document.createElement('div');
-    ptsNum.className = 'lb-pts';
-    ptsNum.textContent = e.total;
-    var ptsEnt = document.createElement('div');
-    ptsEnt.className = 'lb-entries';
+    info.appendChild(nameEl); info.appendChild(subEl);
+    var pts = document.createElement('div'); pts.style.textAlign = 'right';
+    var ptsNum = document.createElement('div'); ptsNum.className = 'lb-pts'; ptsNum.textContent = e.total;
+    var ptsEnt = document.createElement('div'); ptsEnt.className = 'lb-entries';
     ptsEnt.textContent = Math.floor(e.total/12) + ' entries';
-    pts.appendChild(ptsNum);
-    pts.appendChild(ptsEnt);
-
-    row.appendChild(rank);
-    row.appendChild(avatar);
-    row.appendChild(info);
-    row.appendChild(pts);
+    pts.appendChild(ptsNum); pts.appendChild(ptsEnt);
+    row.appendChild(rank); row.appendChild(avatar); row.appendChild(info); row.appendChild(pts);
     list.appendChild(row);
   });
 }
 
+// ── RESET ────────────────────────────────────────────────
 function resetCurrent() {
+  if (!isEditable()) return;
   if (!confirm('Reset all your progress? This cannot be undone.')) return;
-  var p = cp();
-  p.classes = 0; p.bonuses = {}; p.notes = {}; p.classNotes = {}; p.earlySignup = 0;
-  expandedClass = null;
-  expandedBonuses = {};
+  var p = vp();
+  p.classes=0; p.bonuses={}; p.notes={}; p.classNotes={}; p.earlySignup=0;
+  expandedClass=null; expandedBonuses={};
   renderTracker();
   saveCurrentProfile();
 }
 
+// ── INIT ─────────────────────────────────────────────────
 function init() {
+  setupPinInputs('pin');
+  setupPinInputs('new-pin');
   renderAvatarPicker(AV_COLORS[0]);
+
   apiGet({action:'getAll'}).then(function(r) {
     if (r.profiles !== undefined) {
       profiles = r.profiles;
       if (currentId && profiles[currentId]) {
+        viewingId = currentId;
+        // Always unlock own profile on own device
+        if (unlockedIds.indexOf(currentId) === -1) unlockedIds.push(currentId);
+        sessionStorage.setItem(UNLOCKED_KEY, JSON.stringify(unlockedIds));
         showMain();
         return;
       }
