@@ -771,9 +771,9 @@ function addChallenge() {
   var name = document.getElementById('new-ch-name').value.trim();
   var pts = parseInt(document.getElementById('new-ch-pts').value) || 1;
   var max = parseInt(document.getElementById('new-ch-max').value) || 1;
-  var week = document.getElementById('new-ch-week').value.trim();
-  var groupSize = parseInt(document.getElementById('new-ch-group').value) || 1;
-  var notePrompt = document.getElementById('new-ch-prompt').value.trim();
+  var week = document.getElementById('new-ch-week') ? document.getElementById('new-ch-week').value.trim() : '';
+  var groupSize = document.getElementById('new-ch-group') ? parseInt(document.getElementById('new-ch-group').value) || 1 : 1;
+  var notePrompt = document.getElementById('new-ch-prompt') ? document.getElementById('new-ch-prompt').value.trim() : '';
 
   if (!name) { alert('Please enter a challenge name.'); return; }
 
@@ -790,12 +790,9 @@ function addChallenge() {
   saveChallenges(function() {
     renderChallengesEditor();
     document.getElementById('new-ch-name').value = '';
-    document.getElementById('new-ch-week').value = '';
-    document.getElementById('new-ch-max').value = '1';
     document.getElementById('new-ch-pts').value = '1';
-    if (document.getElementById('new-ch-group')) document.getElementById('new-ch-group').value = '1';
-    if (document.getElementById('new-ch-prompt')) document.getElementById('new-ch-prompt').value = '';
-    showToast('Challenge added');
+    document.getElementById('new-ch-max').value = '1';
+    if (document.getElementById('new-ch-week')) document.getElementById('new-ch-week').value = '';
   });
 }
 
