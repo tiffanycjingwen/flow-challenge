@@ -167,6 +167,15 @@
   }
   .drive-link:hover { background: #f5e0b5; }
 
+  .ch-card { background:var(--surface); border-radius:var(--radius-sm); border:1px solid var(--border); padding:12px 14px; margin-bottom:8px; }
+  .ch-card.weekly { border-color:rgba(186,117,23,0.4); background:var(--gold-bg); }
+  .ch-head { display:flex; align-items:center; gap:10px; }
+  .ch-pts-badge { font-size:11px; font-weight:500; padding:3px 8px; border-radius:20px; background:var(--surface2); color:var(--text2); white-space:nowrap; flex-shrink:0; }
+  .ch-name { font-size:13px; font-weight:500; flex:1; }
+  .ch-meta { font-size:11px; color:var(--text3); margin-top:2px; }
+  .ch-actions { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+  .btn-ch-edit { background:var(--surface2); color:var(--text); border:1px solid var(--border2); }
+  .btn-ch-delete { background:var(--red-bg); color:var(--red-text); border:1px solid var(--red-border); }
   .logout-btn {
     font-size: 12px; color: var(--text3); background: none; border: none;
     cursor: pointer; font-family: 'DM Sans', sans-serif; text-decoration: underline;
@@ -220,6 +229,35 @@
 
   <div class="section-title">Manage profiles</div>
   <div id="profiles-list"></div>
+
+  <div class="section-title" style="margin-top:36px;">Challenges editor</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6;">Edit existing challenges or add new weekly bonus challenges. Changes apply to everyone's tracker immediately.</div>
+  <div id="challenges-editor"></div>
+
+  <div style="background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;margin-top:12px;">
+    <div style="font-size:14px;font-weight:500;margin-bottom:16px;">Add a new challenge</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div>
+        <div class="field-label">Challenge name</div>
+        <input type="text" id="new-ch-name" placeholder="e.g. Attend a reformer class" style="margin-bottom:0;" />
+      </div>
+      <div>
+        <div class="field-label">Points per completion</div>
+        <input type="number" id="new-ch-pts" min="1" max="10" value="1" style="margin-bottom:0;" />
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div>
+        <div class="field-label">Max completions (dots)</div>
+        <input type="number" id="new-ch-max" min="1" max="10" value="1" style="margin-bottom:0;" />
+      </div>
+      <div>
+        <div class="field-label">Week label (optional)</div>
+        <input type="text" id="new-ch-week" placeholder="e.g. Week 2 bonus" style="margin-bottom:0;" />
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="addChallenge()" style="width:auto;padding:10px 20px;">Add challenge</button>
+  </div>
 
   <div class="credit">
     Made by <strong>Tiffany Wen</strong><br>
@@ -317,7 +355,9 @@ function loadData() {
   apiGet({action: 'getAll'}).then(function(r) {
     if (r.profiles !== undefined) {
       profiles = r.profiles;
+      if (r.challenges) customChallenges = r.challenges;
       renderAll();
+      renderChallengesEditor();
     }
   }).catch(function() {
     showToast('Failed to load data');
@@ -565,6 +605,189 @@ function submitResetPin() {
 }
 
 setupPinInput('rpin');
+
+var CHALLENGES_KEY = 'flow_challenges_v1';
+var customChallenges = [];
+
+async function loadChallenges() {
+  try {
+    var r = await apiGet({action:'getAll'});
+    if (r.challenges) {
+      customChallenges = r.challenges;
+    }
+  } catch(e) {}
+  renderChallengesEditor();
+}
+
+function getDefaultChallenges() {
+  return [
+    {id:'ig_instr', name:'IG story with instructor', pts:1, max:4, group:'B1'},
+    {id:'ig_friend', name:'IG story with new friend', pts:1, max:4, group:'B1'},
+    {id:'merch', name:'Class in Flow merch', pts:1, max:4, group:'B1'},
+    {id:'wkday_morn', name:'2 weekday morning classes', pts:2, max:3, group:'B2'},
+    {id:'pilates_chair', name:'2 Pilates Chair Sculpt', pts:2, max:3, group:'B2'},
+    {id:'diff_instr', name:'4 different instructors', pts:2, max:3, group:'B2'},
+    {id:'megastrength', name:'2 MegaStrength classes', pts:2, max:3, group:'B2'},
+    {id:'drunk_elephant', name:'Drunk Elephant workshop', pts:2, max:1, group:'B2'},
+    {id:'refer', name:'Refer friend to intro pack', pts:3, max:4, group:'B3'},
+    {id:'google_review', name:'Google review for 2 studios', pts:3, max:3, group:'B3'},
+    {id:'five_days', name:'5 days in a row', pts:3, max:3, group:'B3'},
+    {id:'team4', name:'Register as team of 4', pts:5, max:1, group:'B5'},
+    {id:'before_after', name:'IG feed before & after', pts:5, max:1, group:'B5'},
+    {id:'early', name:'First 50 signups', pts:3, max:1, group:'early'}
+  ];
+}
+
+function renderChallengesEditor() {
+  var el = document.getElementById('challenges-editor');
+  if (!el) return;
+  el.innerHTML = '';
+
+  var defaults = getDefaultChallenges();
+
+  defaults.forEach(function(ch) {
+    el.appendChild(buildChallengeCard(ch, false));
+  });
+
+  if (customChallenges.length > 0) {
+    var weekHeader = document.createElement('div');
+    weekHeader.style.cssText = 'font-size:12px;font-weight:500;color:var(--gold-text);text-transform:uppercase;letter-spacing:0.06em;margin:20px 0 8px;';
+    weekHeader.textContent = 'Weekly bonus challenges';
+    el.appendChild(weekHeader);
+
+    customChallenges.forEach(function(ch, idx) {
+      el.appendChild(buildChallengeCard(ch, true, idx));
+    });
+  }
+}
+
+function buildChallengeCard(ch, isCustom, idx) {
+  var card = document.createElement('div');
+  card.className = 'ch-card' + (isCustom ? ' weekly' : '');
+
+  var head = document.createElement('div');
+  head.className = 'ch-head';
+
+  var badge = document.createElement('div');
+  badge.className = 'ch-pts-badge';
+  badge.textContent = '+' + ch.pts + ' pt' + (ch.pts > 1 ? 's' : '');
+
+  var info = document.createElement('div');
+  info.style.flex = '1';
+  var name = document.createElement('div');
+  name.className = 'ch-name';
+  name.textContent = ch.name;
+  var meta = document.createElement('div');
+  meta.className = 'ch-meta';
+  meta.textContent = ch.max + ' dot' + (ch.max > 1 ? 's' : '') + (ch.week ? ' · ' + ch.week : '');
+  info.appendChild(name);
+  info.appendChild(meta);
+
+  head.appendChild(badge);
+  head.appendChild(info);
+  card.appendChild(head);
+
+  // Edit row
+  var editRow = document.createElement('div');
+  editRow.className = 'ch-actions';
+  editRow.style.display = 'none';
+
+  var nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.value = ch.name;
+  nameInput.style.cssText = 'flex:1;margin:0;font-size:13px;';
+
+  var maxInput = document.createElement('input');
+  maxInput.type = 'number';
+  maxInput.value = ch.max;
+  maxInput.min = '1'; maxInput.max = '10';
+  maxInput.style.cssText = 'width:60px;margin:0;font-size:13px;';
+
+  var ptsSelect = document.createElement('input');
+  ptsSelect.type = 'number';
+  ptsSelect.min = '1';
+  ptsSelect.max = '10';
+  ptsSelect.value = ch.pts || 1;
+  ptsSelect.style.cssText = 'width:80px;margin:0;font-size:13px;';
+
+  var saveBtn = document.createElement('button');
+  saveBtn.className = 'btn-sm btn-save';
+  saveBtn.textContent = 'Save';
+  saveBtn.onclick = function() {
+    ch.name = nameInput.value;
+    ch.max = parseInt(maxInput.value) || 1;
+    ch.pts = parseInt(ptsSelect.value);
+    if (isCustom) {
+      customChallenges[idx] = ch;
+      saveChallenges();
+    }
+    showToast('Updated — refresh tracker to see changes');
+    renderChallengesEditor();
+  };
+
+  editRow.appendChild(nameInput);
+  editRow.appendChild(maxInput);
+  editRow.appendChild(ptsSelect);
+  editRow.appendChild(saveBtn);
+
+  if (isCustom) {
+    var delBtn = document.createElement('button');
+    delBtn.className = 'btn-sm btn-ch-delete';
+    delBtn.textContent = 'Remove';
+    delBtn.onclick = function() {
+      if (!confirm('Remove this challenge?')) return;
+      customChallenges.splice(idx, 1);
+      saveChallenges();
+      renderChallengesEditor();
+    };
+    editRow.appendChild(delBtn);
+  }
+
+  card.appendChild(editRow);
+
+  // Toggle edit
+  var toggleBtn = document.createElement('button');
+  toggleBtn.className = 'btn-sm btn-ch-edit';
+  toggleBtn.style.cssText = 'margin-top:8px;font-size:11px;';
+  toggleBtn.textContent = 'Edit';
+  toggleBtn.onclick = function() {
+    var open = editRow.style.display !== 'none' && editRow.style.display !== '';
+    editRow.style.display = open ? 'none' : 'flex';
+    toggleBtn.textContent = open ? 'Edit' : 'Cancel';
+  };
+  card.appendChild(toggleBtn);
+
+  return card;
+}
+
+async function saveChallenges() {
+  try {
+    await apiPost({action:'saveChallenges', challenges: customChallenges});
+    showToast('Challenges saved');
+  } catch(e) {
+    showToast('Save failed');
+  }
+}
+
+function addChallenge() {
+  var name = document.getElementById('new-ch-name').value.trim();
+  var pts = parseInt(document.getElementById('new-ch-pts').value);
+  var max = parseInt(document.getElementById('new-ch-max').value) || 1;
+  var week = document.getElementById('new-ch-week').value.trim();
+
+  if (!name) { alert('Please enter a challenge name.'); return; }
+
+  var id = 'custom_' + Date.now();
+  customChallenges.push({id:id, name:name, pts:pts, max:max, week:week || null});
+  saveChallenges();
+  renderChallengesEditor();
+
+  document.getElementById('new-ch-name').value = '';
+  document.getElementById('new-ch-week').value = '';
+  document.getElementById('new-ch-max').value = '1';
+  showToast('Challenge added');
+}
+
 </script>
 
 <!-- Reset PIN modal -->
