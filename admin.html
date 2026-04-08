@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;🔥&lt;/text&gt;&lt;/svg&gt;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>Admin — Flow Challenge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -759,13 +760,12 @@ function buildChallengeCard(ch, isCustom, idx) {
   return card;
 }
 
-async async function saveChallenges() {
-  try {
-    await apiPost({action:'saveChallenges', challenges: customChallenges});
+async function saveChallenges(cb) {
+  apiPost({action:'saveChallenges', challenges: customChallenges}).then(function(r) {
+    if (r.error) { showToast('Save failed'); return; }
     showToast('Challenges saved');
-  } catch(e) {
-    showToast('Save failed');
-  }
+    if (cb) cb();
+  }).catch(function() { showToast('Save failed'); });
 }
 
 function addChallenge() {
