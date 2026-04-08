@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;🔥&lt;/text&gt;&lt;/svg&gt;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>Admin — Flow Challenge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -760,7 +759,7 @@ function buildChallengeCard(ch, isCustom, idx) {
   return card;
 }
 
-async function saveChallenges(cb) {
+function saveChallenges(cb) {
   apiPost({action:'saveChallenges', challenges: customChallenges}).then(function(r) {
     if (r.error) { showToast('Save failed'); return; }
     showToast('Challenges saved');
@@ -770,21 +769,34 @@ async function saveChallenges(cb) {
 
 function addChallenge() {
   var name = document.getElementById('new-ch-name').value.trim();
-  var pts = parseInt(document.getElementById('new-ch-pts').value);
+  var pts = parseInt(document.getElementById('new-ch-pts').value) || 1;
   var max = parseInt(document.getElementById('new-ch-max').value) || 1;
   var week = document.getElementById('new-ch-week').value.trim();
+  var groupSize = parseInt(document.getElementById('new-ch-group').value) || 1;
+  var notePrompt = document.getElementById('new-ch-prompt').value.trim();
 
   if (!name) { alert('Please enter a challenge name.'); return; }
 
-  var id = 'custom_' + Date.now();
-  customChallenges.push({id:id, name:name, pts:pts, max:max, week:week || null});
-  saveChallenges();
-  renderChallengesEditor();
-
-  document.getElementById('new-ch-name').value = '';
-  document.getElementById('new-ch-week').value = '';
-  document.getElementById('new-ch-max').value = '1';
-  showToast('Challenge added');
+  var ch = {
+    id: 'custom_' + Date.now(),
+    name: name,
+    pts: pts,
+    max: max,
+    groupSize: groupSize,
+    week: week || null,
+    notePrompt: notePrompt || null
+  };
+  customChallenges.push(ch);
+  saveChallenges(function() {
+    renderChallengesEditor();
+    document.getElementById('new-ch-name').value = '';
+    document.getElementById('new-ch-week').value = '';
+    document.getElementById('new-ch-max').value = '1';
+    document.getElementById('new-ch-pts').value = '1';
+    if (document.getElementById('new-ch-group')) document.getElementById('new-ch-group').value = '1';
+    if (document.getElementById('new-ch-prompt')) document.getElementById('new-ch-prompt').value = '';
+    showToast('Challenge added');
+  });
 }
 
 </script>
